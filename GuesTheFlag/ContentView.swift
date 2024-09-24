@@ -7,6 +7,38 @@
 
 import SwiftUI
 
+// I replace the Image view used for flags with a new FlagImage() view that renders one flag image using the specific set of modifiers we had.
+
+struct FlagImage: View {
+    var image: String
+    var body: some View {
+        Image(image)
+            .clipShape(.capsule)
+            .shadow(radius: 15)
+    }
+    
+}
+
+// Create a custom ViewModifier (and accompanying View extension) that makes a view have a large, blue font suitable for prominent titles in a view.
+
+struct Title: ViewModifier {
+    var title: String
+    func body(content: Content) -> some View {
+        content
+        Text(title)
+            .font(.largeTitle)
+            .foregroundStyle(.blue)
+    }
+}
+    
+extension View {
+    func titleStyle(with title: String) -> some View {
+        modifier(Title(title: title))
+    }
+}
+    
+
+
 struct ContentView: View {
     @State private var countries = ["Estonia", "France", "Germany","Ireland", "Italy","Monaco", "Nigeria", "Poland","Russia","Spain","UK", "US"].map { $0.lowercased()}.shuffled()
     @State private var showingScore = false
@@ -24,7 +56,8 @@ struct ContentView: View {
                 .ignoresSafeArea()
             VStack {
                 Spacer()
-                Text("Guess The Flag ")
+                    .titleStyle(with: "Guess The Flag")
+                //Text("Guess The Flag ")
                     .font(.largeTitle.bold())
                     .foregroundStyle(.white)
                 VStack (spacing: 15){
@@ -42,9 +75,11 @@ struct ContentView: View {
                                 // Flag was tapped
                                 flagTapped(number)
                             }label: {
-                                Image(countries[number])
-                                    .clipShape(.capsule)
-                                    .shadow(radius: 15)
+// replace the Image view used for flags with a new FlagImage()
+                               // Image(countries[number])
+                                FlagImage(image:countries[number])
+//                                    .clipShape(.capsule)
+//                                    .shadow(radius: 15)
                             }
                         }
                 }
