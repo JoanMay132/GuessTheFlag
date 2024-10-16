@@ -46,6 +46,7 @@ struct ContentView: View {
     @State private var gameOver = false
     @State private var score = 0
     @State private var currentAnswer = Int.random(in: 0...2)
+    @State private var selectedFlag: Int = -1
     var body: some View {
         ZStack {
 //            RadialGradient(stops: [
@@ -81,6 +82,13 @@ struct ContentView: View {
 //                                    .clipShape(.capsule)
 //                                    .shadow(radius: 15)
                             }
+                            .rotation3DEffect(.degrees(selectedFlag == number ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                            
+                            .opacity(selectedFlag == number || selectedFlag == -1 ? 1 : 0.25)
+//                            .scaleEffect(selectedFlag == number || selectedFlag == -1 ? 1 : 0.25)
+//                            .saturation(selectedFlag == number || selectedFlag == -1 ? 1 : 0)
+                            .blur(radius: selectedFlag == number || selectedFlag == -1 ? 0 : 3)
+                            .animation(.default, value: selectedFlag)
                         }
                 }
                 .frame(maxWidth: .infinity)
@@ -114,7 +122,7 @@ struct ContentView: View {
             gameOver = true
             score = 0
         }
-      
+        selectedFlag = number
         if score == 8 {
             scoreTitle = "You won!"
             gameOver = true
@@ -130,6 +138,7 @@ struct ContentView: View {
             score = 0
             gameOver = false
         }
+        selectedFlag = -1
         countries.shuffle()
         currentAnswer = Int.random(in: 0...2)
         
